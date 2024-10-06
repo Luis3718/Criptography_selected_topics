@@ -99,28 +99,19 @@ def Encontrar_puntos(a,b,Prime):
   Puntos=[]
   Square_roots=Quadratic_Recsidues(Prime)
   Resultados=Eliptic_curves_function(a,b,Prime)
-  for i in Square_roots:
-    cont=0
-    for j in Resultados:
-      if j==0:
-        Puntos.append(cont)
-        Puntos.append(j)
-        Puntos.append(1)
-      if j==i:
-        #print(f"x:{cont} y1,y2:{Square_roots[j]}")
+  cont=0
+  for i in Resultados:
+    if i==0: # caso para raiz 0
+      Puntos.append(cont)
+      Puntos.append(i)
+      Puntos.append(1)
+    for j in Square_roots:
+      if i==j: # caso de buscar en residuos cuadraticos
         for k in Square_roots[j]:
           Puntos.append(cont)
           Puntos.append(k)
           Puntos.append(1)
-      cont+=1
-  # Utilizamos estos digitos como referencia al punto al infinito
-  Puntos.append(0)
-  Puntos.append(1)
-  Puntos.append(0)
-  print("\nPuntos de la curva: ")
-  for i in range(0,len(Puntos),3):
-    print(f"({Puntos[i]},{Puntos[i+1]},{Puntos[i+2]})")
-  return Puntos
+    cont+=1
 
 # Funcion que nos permite ingresar coordenadas de un punto a un arreglo
 def Ingresar_punto():
@@ -168,15 +159,15 @@ def Suma_punto(a,b,Primo,PuntoP,PuntoQ,Puntos):
       inv=0
     else: 
       inv=Xgcd(num,Primo)
-      s= ((y2-y1)*(inv))%Primo
-      print(f"S= {s}")
-      x3=((s**2)-x1-x2)%Primo
-      y3=(s*(x1-x3)-y1)%Primo
-      Res.append(x3)
-      Res.append(y3)
-      Res.append(1)
-      print(f"P+Q= {Res}")
-      return Res
+    s= ((y2-y1)*(inv))%Primo
+    print(f"S= {s}")
+    x3=((s**2)-x1-x2)%Primo
+    y3=(s*(x1-x3)-y1)%Primo
+    Res.append(x3)
+    Res.append(y3)
+    Res.append(1)
+    print(f"P+Q= {Res}")
+    return Res
 
 # Funcion que realiza el doblado de punto 
 def Doblado_punto(a,b,Primo,PuntoP,Puntos):
