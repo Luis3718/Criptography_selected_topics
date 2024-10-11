@@ -7,6 +7,7 @@
   Grupo: 7CM1
 """
 import secrets
+import random
 import ast
 import math
 from sympy import primerange
@@ -124,7 +125,7 @@ def Verificar_punto(a,b,Prime,Punto,Puntos):
 
 # Funcion que realiza la suma de puntos
 def Suma_punto(a,b,Primo,PuntoP,PuntoQ,Puntos):
-  if Verificar_punto(a,b,Primo,PuntoP,Puntos)==True and Verificar_punto(a,b,Primo,PuntoQ,Puntos)==True:
+  #if Verificar_punto(a,b,Primo,PuntoP,Puntos)==True and Verificar_punto(a,b,Primo,PuntoQ,Puntos)==True:
     Res=[]
     x1=PuntoP[0]
     x2=PuntoQ[0]
@@ -146,7 +147,7 @@ def Suma_punto(a,b,Primo,PuntoP,PuntoQ,Puntos):
     if num==0:
       inv=0
     else: 
-      inv=Xgcd(num,Primo)
+      inv=inverse(num,Primo)
     s= ((y2-y1)*(inv))%Primo
     x3=((s**2)-x1-x2)%Primo
     y3=(s*(x1-x3)-y1)%Primo
@@ -158,7 +159,7 @@ def Suma_punto(a,b,Primo,PuntoP,PuntoQ,Puntos):
 
 # Funcion que realiza el doblado de punto 
 def Doblado_punto(a,b,Primo,PuntoP,Puntos):
-  if Verificar_punto(a,b,Primo,PuntoP,Puntos)==True :
+  #if Verificar_punto(a,b,Primo,PuntoP,Puntos)==True :
     Res=[]
     x1=PuntoP[0]
     y1=PuntoP[1]
@@ -170,7 +171,7 @@ def Doblado_punto(a,b,Primo,PuntoP,Puntos):
       # Esto es un caso que debo de checar
       inv=0
     else: 
-      inv=Xgcd(num,Primo)
+      inv=inverse(num,Primo)
     s= ((3*(x1**2)+a)*(inv))%Primo
     x3=((s**2)-x1-x1)%Primo
     y3=(s*(x1-x3)-y1)%Primo
@@ -229,7 +230,7 @@ def Signature_ECDSA(Primo,a,b,Orden,Generador,Puntos,Mensaje,Private_key):
   print(f"R={R}")
   r=R[0]
   print(f"r={r}")
-  InvKe=Xgcd(Ke,Orden)
+  InvKe=inverse(Ke,Orden)
   print(InvKe)
   mitad=(Private_key*r)
   s=((Mensaje+mitad)*InvKe)%Orden
@@ -281,17 +282,17 @@ def Verification_ECDSA(Mensaje,Nombre_archivo,Firma):
     P=[0,0] 
     print(f"P={P}")
   elif u1>0 and u2<=0:
-    Primer_parte=ECDH(q,a,b,u1,A,Puntos)
+    Primer_parte=ECDH(Primo,a,b,u1,A,Puntos)
     P=Primer_parte
     print(f"P={P}")
   elif u1<=0 and u2>0:
-    Segunda_parte=ECDH(q,a,b,u2,B,Puntos)
+    Segunda_parte=ECDH(Primo,a,b,u2,B,Puntos)
     P=Segunda_parte
     print(f"P={P}")
   else: 
-    Primer_parte=ECDH(q,a,b,u1,A,Puntos)
-    Segunda_parte=ECDH(q,a,b,u2,B,Puntos)
-    P=Suma_punto(a,b,q,Primer_parte,Segunda_parte,Puntos)  
+    Primer_parte=ECDH(Primo,a,b,u1,A,Puntos)
+    Segunda_parte=ECDH(Primo,a,b,u2,B,Puntos)
+    P=Suma_punto(a,b,Primo,Primer_parte,Segunda_parte,Puntos)  
     print(f"P={P}")
   xp=P[0]
   print(f"Xp={xp}")
@@ -311,7 +312,7 @@ def opcion_1():
 
 def opcion_2():
   Mensaje=int(input("Ingresa el mensaje: "))
-  Ver=Verification_ECDSA(Mensaje,"Llave_publica.txt","Firma.txt") 
+  Ver=Verification_ECDSA(Mensaje,"clave_publica.txt","Firma.txt") 
   if Ver==True:
     print("Firma valida")
   else: 

@@ -112,6 +112,17 @@ def Encontrar_puntos(a,b,Prime):
           Puntos.append(k)
           Puntos.append(1)
     cont+=1
+  
+  # Punto al infinito
+  Puntos.append(0)
+  Puntos.append(1)
+  Puntos.append(0)
+  
+  print("\nPuntos de la curva: ")
+  for i in range(0,len(Puntos),3):
+    print(f"({Puntos[i]},{Puntos[i+1]},{Puntos[i+2]})")
+  
+  return Puntos
 
 # Funcion que nos permite ingresar coordenadas de un punto a un arreglo
 def Ingresar_punto():
@@ -135,7 +146,7 @@ def Verificar_punto(a,b,Prime,Punto,Puntos):
 
 # Funcion que realiza la suma de puntos
 def Suma_punto(a,b,Primo,PuntoP,PuntoQ,Puntos):
-  if Verificar_punto(a,b,Primo,PuntoP,Puntos)==True and Verificar_punto(a,b,Primo,PuntoQ,Puntos)==True:
+  #if Verificar_punto(a,b,Primo,PuntoP,Puntos)==True and Verificar_punto(a,b,Primo,PuntoQ,Puntos)==True:
     Res=[]
     x1=PuntoP[0]
     x2=PuntoQ[0]
@@ -171,7 +182,7 @@ def Suma_punto(a,b,Primo,PuntoP,PuntoQ,Puntos):
 
 # Funcion que realiza el doblado de punto 
 def Doblado_punto(a,b,Primo,PuntoP,Puntos):
-  if Verificar_punto(a,b,Primo,PuntoP,Puntos)==True :
+  #if Verificar_punto(a,b,Primo,PuntoP,Puntos)==True :
     Res=[]
     x1=PuntoP[0]
     y1=PuntoP[1]
