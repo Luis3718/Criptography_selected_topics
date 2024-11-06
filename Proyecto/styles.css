@@ -1,0 +1,291 @@
+/* Diseño básico */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+}
+
+/* Estilos para el menú de navegación */
+nav {
+    background-color: #00A99D;
+    padding: 10px;
+}
+
+nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    text-align: right;
+}
+
+nav ul li {
+    display: inline;
+    margin-right: 20px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Contenedor principal de registro */
+.registro-container {
+    width: 80%;
+    margin: 20px auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    text-align: center;
+    color: #00A99D;
+    margin-bottom: 20px;
+}
+
+/* Contenedor para avatar y formulario */
+.contenedor-secciones {
+    display: flex;
+    justify-content: space-between;
+    align-items: center; /* Centrar verticalmente ambos contenedores */
+    width: 100%;
+    min-height: 100%; /* Asegura que ocupe el espacio vertical total */
+}
+
+/* Sección de avatar */
+.avatar-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center; /* Centra el contenido verticalmente */
+    width: 45%;
+}
+
+.avatar-box {
+    width: 150px;
+    height: 150px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 2px solid #ccc;
+    transition: transform 0.2s;
+}
+
+.avatar-box img {
+    width: 100%; /* Hace que la imagen ocupe toda la caja */
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-section button {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #00A99D;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.avatar-section button:hover {
+    background-color: #00897B;
+}
+
+.avatar-gallery {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    max-width: 300px;
+    flex-wrap: wrap;
+}
+
+.avatar-gallery img {
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: transform 0.2s;
+}
+
+.avatar-gallery img:hover {
+    transform: scale(1.1);
+}
+
+/* Sección del formulario */
+.form-section {
+    width: 50%; /* Ancho para ocupar más de la mitad del contenedor principal */
+}
+
+.form-section .question {
+    margin: 15px 0;
+    text-align: left;
+}
+
+.question label {
+    font-size: 16px;
+    color: #333;
+}
+
+button[type="submit"] {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: #00A99D;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* Contenedor de inicio de sesión */
+.login-container {
+    width: 400px;
+    margin: 100px auto;
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.login-container h1 {
+    color: #00A99D;
+    margin-bottom: 20px;
+}
+
+.login-container .question {
+    margin: 15px 0;
+}
+
+.login-container p {
+    color: #666;
+    margin-top: 15px;
+}
+
+.login-container a {
+    color: #00A99D;
+    text-decoration: none;
+}
+
+.login-container a:hover {
+    text-decoration: underline;
+}
+
+/* Contenedor principal centrado */
+.main-content-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 70vh; /* Ajuste opcional para centrar verticalmente */
+    padding: 20px;
+}
+
+.content {
+    width: 80%;
+    max-width: 800px;
+    background-color: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Footer */
+footer {
+    background-color: #00A99D;
+    padding: 20px;
+    text-align: center;
+    color: white;
+    font-size: 14px;
+    margin-top: 50px;
+}
+
+footer p {
+    margin: 5px 0;
+}
+
+footer a {
+    color: white;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+/* Media Queries: Diseño responsivo */
+@media (max-width: 768px) {
+    .registro-container {
+        width: 90%;
+    }
+
+    .contenedor-secciones {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .avatar-section, .form-section {
+        width: 100%;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+
+    .question label {
+        font-size: 14px;
+    }
+
+    button {
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    nav ul li {
+        margin-right: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .registro-container {
+        width: 95%;
+    }
+
+    h1 {
+        font-size: 20px;
+    }
+
+    .question label {
+        font-size: 12px;
+    }
+
+    button {
+        font-size: 12px;
+        padding: 10px;
+    }
+
+    nav ul li {
+        display: block;
+        text-align: center;
+        margin: 10px 0;
+    }
+
+    nav ul {
+        text-align: center;
+    }
+}
