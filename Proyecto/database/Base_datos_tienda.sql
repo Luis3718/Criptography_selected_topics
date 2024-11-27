@@ -74,14 +74,24 @@ CREATE TABLE MonthlySalesReports (
 
 -- Insert sample data for Customers
 INSERT INTO Customers (FullName, PhoneNumber, CreditCardNumber)
-VALUES ('John Doe', '555-1234', 'encrypted_card_1'),
-       ('Jane Smith', '555-5678', 'encrypted_card_2');
+VALUES ('Luis Alvarado', '5555451234', '45265186356125796'),
+       ('Pedro Insunza', '555558678', '4564823647526476'),
+       ('Benja ortega', '556825678', '4591688615364875'),
+       ('Jesus Ramirez', '5568654458', '4596588455364875'),
+       ('Orlando Juarez', '5568687458', '4596289655364875'),
 
 -- Insert sample data for Products
 INSERT INTO Products (ProductName, Price)
-VALUES ('T-Shirt', 20.00),
-       ('Jeans', 50.00),
-       ('Jacket', 100.00);
+VALUES ('Playera verde', 200.00), 
+       ('Playera roja', 200.00),
+       ('Playera gris', 200.00),
+       ('Playera cafe', 200.00),
+       ('Playera azul', 200.00),
+       ('Pantalon azul', 250.00),
+       ('Pantalon gris', 250.00),
+       ('Playera negro', 250.00),
+       ('Cartera', 100.00);
+
 
 -- Insert sample data for Employees
 INSERT INTO Employees (FullName)
