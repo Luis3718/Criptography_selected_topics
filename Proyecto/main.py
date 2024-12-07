@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import Base, engine
-from routers import auth, register, customer, employee
+from routers import customer, employee
 
 # Initialize database tables
 Base.metadata.create_all(bind=engine)
@@ -18,8 +18,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include routers
-app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
-app.include_router(register.router, prefix="/register", tags=["Registration"])
+# Incluir routers
+app.include_router(customer.router, prefix="/customers", tags=["Customers"])
+app.include_router(employee.router, prefix="/employees", tags=["Employees"])
 #app.include_router(customer.router, prefix="/customer", tags=["Customer Operations"])
 #app.include_router(employee.router, prefix="/employee", tags=["Employee Operations"])

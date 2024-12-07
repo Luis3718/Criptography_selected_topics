@@ -1,26 +1,17 @@
 from pydantic import BaseModel
 from enum import Enum
 
-class RoleEnum(str, Enum):
-    Employee = "Employee"
-    Admin = "Admin"
+# Modelos de Pydantic para validación
+class CustomerCreate(BaseModel):
+    FullName: str
+    PhoneNumber: str
+    CreditCardNumber: str
+    Username: str
+    PasswordHash: str
 
-class LoginRequest(BaseModel):
-    username: str
-    password: str
-    role: str
+class EmployeeCreate(BaseModel):
+    FullName: str
+    Username: str
+    PasswordHash: str
+    PublicKeyECDSA: str
 
-class LoginResponse(BaseModel):
-    message: str
-    user_id: int
-
-class RegisterCustomerRequest(BaseModel):
-    username: str
-    password: str
-    customer_id: int
-
-class RegisterEmployeeRequest(BaseModel):
-    username: str
-    password: str
-    employee_id: int
-    role: RoleEnum

@@ -1,22 +1,22 @@
-from sqlalchemy import Column, Integer, String, Enum
+from sqlalchemy import Column, Integer, String, Enum, Text
 from database import Base
 import enum
 
-class RoleEnum(enum.Enum):
-    Employee = "Employee"
-    Admin = "Admin"
-
-class CustomerUsers(Base):
-    __tablename__ = "customerusers"
-    UserID = Column(Integer, primary_key=True, index=True)
-    CustomerID = Column(Integer, nullable=False)
+# Modelo de Cliente para SQLAlchemy
+class Customer(Base):
+    __tablename__ = "customers"
+    CustomerID = Column(Integer, primary_key=True, index=True)
+    FullName = Column(String(255), nullable=False)
+    PhoneNumber = Column(String(15), nullable=False)
+    CreditCardNumber = Column(String(255), nullable=False)
     Username = Column(String(255), unique=True, nullable=False)
     PasswordHash = Column(String(255), nullable=False)
 
-class EmployeeUsers(Base):
-    __tablename__ = "employeeusers"
-    UserID = Column(Integer, primary_key=True, index=True)
-    EmployeeID = Column(Integer, nullable=False)
+# Modelo de Empleado para SQLAlchemy
+class Employee(Base):
+    __tablename__ = "employees"
+    EmployeeID = Column(Integer, primary_key=True, index=True)
+    FullName = Column(String(255), nullable=False)
     Username = Column(String(255), unique=True, nullable=False)
     PasswordHash = Column(String(255), nullable=False)
-    Role = Column(Enum(RoleEnum), nullable=False)
+    PublicKeyECDSA = Column(Text, nullable=False)

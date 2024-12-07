@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from crud import create_customer_user, create_employee_user
 from database import get_db
-from schemas import RegisterCustomerRequest, RegisterEmployeeRequest
+from schemas import CustomerCreate, EmployeeCreate
 
 router = APIRouter()
 

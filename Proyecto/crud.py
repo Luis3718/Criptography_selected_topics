@@ -1,31 +1,35 @@
 from sqlalchemy.orm import Session
-from models import CustomerUsers, EmployeeUsers
-from custom_hashing import hash_password, verify_password
+import models, schemas
+from custom_hashing import hash_password
+from ECDSA import generate_ecdsa_keys  # Importar la función para generar llaves ECDSA
 
-def authenticate_customer(db: Session, username: str, password: str):
-    user = db.query(CustomerUsers).filter(CustomerUsers.Username == username).first()
-    if user and verify_password(password, user.PasswordHash):
-        return user
-    return None
+def create_employee(db: Session, employee: schemas.EmployeeCreate):
+    # Hashear la contraseña
+    employee.PasswordHash = hash_password(employee.PasswordHash)
 
-def authenticate_employee(db: Session, username: str, password: str):
-    user = db.query(EmployeeUsers).filter(EmployeeUsers.Username == username).first()
-    if user and verify_password(password, user.PasswordHash):
-        return user
-    return None
+    # Generar las llaves ECDSA
+    private_key, public_key = generate_ecdsa_keys()
+    employee.PublicKeyECDSA = public_key  # Guardar la llave pública en la base de datos
 
-def create_customer_user(db: Session, username: str, password: str, customer_id: int):
-    hashed_password = hash_password(password)
-    new_user = CustomerUsers(CustomerID=customer_id, Username=username, PasswordHash=hashed_password)
-    db.add(new_user)
+    # Crear la entrada en la base de datos
+    db_employee = models.Employee(**employee.dict())
+    db.add(db_employee)
     db.commit()
-    db.refresh(new_user)
-    return new_user
+    db.refresh(db_employee)
 
-def create_employee_user(db: Session, username: str, password: str, employee_id: int, role: str):
-    hashed_password = hash_password(password)
-    new_user = EmployeeUsers(EmployeeID=employee_id, Username=username, PasswordHash=hashed_password, Role=role)
-    db.add(new_user)
+    # Guardar la llave privada en un archivo
+    file_path = f"private_keys/private_key_{db_employee.EmployeeID}.pem"
+    with open(file_path, "w") as key_file:
+        key_file.write(private_key)
+
+    return db_employee, file_path  # Retornar el archivo generado
+
+
+def create_customer(db: Session, customer: schemas.CustomerCreate):
+    # Hashear la contraseña
+    customer.PasswordHash = hash_password(customer.PasswordHash)
+    db_customer = models.Customer(**customer.dict())
+    db.add(db_customer)
     db.commit()
-    db.refresh(new_user)
-    return new_user
+    db.refresh(db_customer)
+    return db_customer
