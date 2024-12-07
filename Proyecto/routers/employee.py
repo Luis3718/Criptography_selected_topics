@@ -18,7 +18,7 @@ def register_employee(employee: schemas.EmployeeCreate, db: Session = Depends(da
 
 @router.get("/download_private_key/{employee_id}")
 def download_private_key(employee_id: int):
-    file_path = f"app/private_keys/private_key_{employee_id}.pem"
+    file_path = f"private_keys/private_key_{employee_id}.pem"  # Ruta relativa correcta
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="Private key not found")
     return FileResponse(file_path, media_type="application/x-pem-file", filename=f"private_key_{employee_id}.pem")

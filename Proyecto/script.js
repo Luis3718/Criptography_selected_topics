@@ -34,7 +34,7 @@ document.getElementById("customerForm").addEventListener("submit", async (e) => 
 
 // registrar empleado
 document.getElementById("employeeForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Evitar el envío predeterminado del formulario
 
     const employeeData = {
         FullName: document.getElementById("employeeFullName").value,
@@ -52,23 +52,15 @@ document.getElementById("employeeForm").addEventListener("submit", async (e) => 
 
         if (response.ok) {
             const result = await response.json();
-            alert("Empleado registrado con éxito.");
+            console.log("Respuesta del servidor:", result);
 
-            // Verifica la URL de la llave privada
+            // Redirigir a la página de éxito con la URL de la llave privada
             if (result.private_key_url) {
-                // Crear enlace de descarga
-                const downloadLink = document.createElement("a");
-                downloadLink.href = `${apiBaseURL}${result.private_key_url}`;
-                downloadLink.textContent = "Descargar llave privada";
-                downloadLink.target = "_blank"; // Abrir en una nueva pestaña
-                downloadLink.style.display = "block"; // Asegurarte de que sea visible
-
-                // Agregar el enlace al formulario
-                const form = document.getElementById("employeeForm");
-                form.appendChild(downloadLink);
+                // Redirigir a success.html con el parámetro private_key_url
+                window.location.href = `success.html?private_key_url=${apiBaseURL}${result.private_key_url}`;
             } else {
-                console.error("URL de llave privada no recibida.");
-            }
+                alert("No se pudo generar el enlace de descarga.");
+            }            
 
             document.getElementById("employeeForm").reset();
         } else {

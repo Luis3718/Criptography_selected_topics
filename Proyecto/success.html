@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro Exitoso</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            text-decoration: none;
+            background-color: #007BFF;
+            color: white;
+            border-radius: 5px;
+        }
+        a:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <h1>¡Registro Exitoso!</h1>
+    <p>Tu llave privada está aqui lista para descargar.</p>
+    <p>Asegurate de guardarla en un luagr seguro ya que la necesitaras en un futuro.</p>
+    <a id="downloadLink" href="#" target="_blank">Descargar Llave Privada</a>
+</body>
+<script>
+    const urlParams = new URLSearchParams(window.location.search);
+    const privateKeyUrl = urlParams.get('private_key_url');
+
+    // Configurar el enlace de descarga
+    const downloadLink = document.getElementById("downloadLink");
+    if (privateKeyUrl) {
+        downloadLink.href = privateKeyUrl;
+    } else {
+        downloadLink.textContent = "No se pudo generar el enlace de descarga.";
+        downloadLink.style.pointerEvents = "none"; // Deshabilitar clic
+    }
+</script>
+</html>

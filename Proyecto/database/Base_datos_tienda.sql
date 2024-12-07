@@ -67,17 +67,3 @@ CREATE TABLE MonthlySalesReports (
     FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
 );
 
--- Insertar datos de prueba (opcional)
-INSERT INTO Customers (FullName, PhoneNumber, CreditCardNumber, Username, PasswordHash)
-VALUES 
-('John Doe', '1234567890', 'ENCRYPTED_CARD_1', 'johndoe', 'HASHED_PASSWORD_1'),
-('Jane Roe', '0987654321', 'ENCRYPTED_CARD_2', 'janeroe', 'HASHED_PASSWORD_2');
-
-INSERT INTO Employees (FullName, Username, PasswordHash, PublicKeyECDSA)
-VALUES 
-('Employee One', 'employee1', 'HASHED_PASSWORD_EMPLOYEE1', 'PUBLIC_KEY_ECDSA_1'),
-('Employee Two', 'employee2', 'HASHED_PASSWORD_EMPLOYEE2', 'PUBLIC_KEY_ECDSA_2');
-
-INSERT INTO AdminUsers (FullName, Username, PasswordHash)
-VALUES 
-('Admin User', 'admin', 'HASHED_PASSWORD_ADMIN');
