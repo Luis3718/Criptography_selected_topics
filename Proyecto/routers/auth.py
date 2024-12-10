@@ -11,7 +11,7 @@ from fastapi.security import OAuth2PasswordBearer
 # Configuración JWT
 SECRET_KEY = "your_secret_key"  # Cambia esto por una clave segura
 ALGORITHM = "HS256"
-ACCESS_TOKEN_EXPIRE_MINUTES = 30
+ACCESS_TOKEN_EXPIRE_MINUTES = 120
 
 # Crear un token JWT
 def create_access_token(data: dict, expires_delta: timedelta = None):

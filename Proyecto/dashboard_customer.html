@@ -55,27 +55,9 @@
         });
     
         document.getElementById("purchasesButton").addEventListener("click", async () => {
-            const token = localStorage.getItem("token");
-            const response = await fetch(`${apiBaseUrl}/purchases`, {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            });
-    
-            if (response.ok) {
-                const data = await response.json();
-                document.getElementById("mainContent").innerHTML = `
-                    <h1>Compras</h1>
-                    <pre>${JSON.stringify(data, null, 2)}</pre>
-                `;
-            } else {
-                document.getElementById("mainContent").innerHTML = `
-                    <h1>Error</h1>
-                    <p>No se pudieron cargar las compras.</p>
-                `;
+            window.location.href = "transactions.html";
             }
-        });
+        );
     
         document.getElementById("logoutButton").addEventListener("click", () => {
             localStorage.removeItem("token");

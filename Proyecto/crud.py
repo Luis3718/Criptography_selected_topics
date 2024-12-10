@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 import models, schemas
 from fpe import encrypt_card_number, generate_salt  # Importa el módulo FPE y generación de Salt
 from custom_hashing import hash_password
@@ -47,3 +48,20 @@ def create_customer(db: Session, customer: schemas.CustomerCreate):
     db.commit()
     db.refresh(db_customer)
     return db_customer
+
+def get_customer_id_from_token(token: str) -> int:
+    import jwt
+    from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
+
+    SECRET_KEY = "your_secret_key"
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        customer_id = payload.get("id")
+        if not customer_id:
+            raise HTTPException(status_code=401, detail="Invalid token payload")
+        return customer_id
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired. Please log in again.")
+    except InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")
+
