@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Empleado</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Contenedor Principal -->
+    <div class="container">
+        <!-- Barra de Submenú -->
+        <nav class="submenu">
+            <button id="transactionsButton">Ver Transacciones</button>
+            <button id="reportButton">Generar Reporte</button>
+            <button id="profileButton">Ver Perfil</button>
+            <button id="logoutButton">Cerrar Sesión</button>
+        </nav>
+
+        <!-- Contenido Principal -->
+        <div id="mainContent">
+            <h1>Bienvenido al Dashboard del Empleado</h1>
+            <p>Selecciona una opción en el menú para continuar.</p>
+        </div>
+    </div>
+
+    <script>
+        // Manejar los botones del submenú
+        document.getElementById("transactionsButton").addEventListener("click", () => {
+            document.getElementById("mainContent").innerHTML = `
+                <h1>Ver Transacciones</h1>
+                <p>Aquí puedes consultar todas las transacciones realizadas.</p>
+            `;
+        });
+
+        document.getElementById("reportButton").addEventListener("click", () => {
+            document.getElementById("mainContent").innerHTML = `
+                <h1>Generar Reporte</h1>
+                <p>Selecciona las opciones necesarias para generar un reporte.</p>
+                <form>
+                    <label for="dateRange">Rango de Fechas:</label>
+                    <input type="date" id="startDate"> a <input type="date" id="endDate">
+                    <button type="button" id="generateReportButton">Generar</button>
+                </form>
+            `;
+
+            // Acción para el botón de generar reporte
+            document.getElementById("generateReportButton").addEventListener("click", () => {
+                alert("Reporte generado correctamente.");
+            });
+        });
+
+        document.getElementById("profileButton").addEventListener("click", () => {
+            document.getElementById("mainContent").innerHTML = `
+                <h1>Ver Perfil</h1>
+                <p>Aquí puedes ver la información de tu perfil.</p>
+            `;
+        });
+
+        document.getElementById("logoutButton").addEventListener("click", () => {
+            // Eliminar el token del almacenamiento local
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+
+            // Redirigir al inicio de sesión
+            window.location.href = "login.html";
+        });
+
+        // Validar que el usuario esté autenticado
+        document.addEventListener("DOMContentLoaded", () => {
+            const token = localStorage.getItem("token");
+            const role = localStorage.getItem("role");
+            if (!token || role !== "employee") {
+                alert("Debes iniciar sesión como empleado para acceder a esta página.");
+                window.location.href = "/login.html";
+            }
+        });
+    </script>
+</body>
+</html>

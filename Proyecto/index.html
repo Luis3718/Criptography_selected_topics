@@ -3,54 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Compradores y Empleados</title>
+    <title>Small Cloth Shop</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Registro de Usuarios</h1>
-        
-        <!-- Formulario para compradores -->
-        <section>
-            <h2>Registro de Compradores</h2>
-            <form id="customerForm">
-                <label for="customerFullName">Nombre Completo:</label>
-                <input type="text" id="customerFullName" name="FullName" required>
-                
-                <label for="customerPhoneNumber">Teléfono:</label>
-                <input type="text" id="customerPhoneNumber" name="PhoneNumber" required>
-                
-                <label for="customerCreditCardNumber">Tarjeta de Crédito:</label>
-                <input type="text" id="customerCreditCardNumber" name="CreditCardNumber" required>
-                
-                <label for="customerUsername">Nombre de Usuario:</label>
-                <input type="text" id="customerUsername" name="Username" required>
-                
-                <label for="customerPassword">Contraseña:</label>
-                <input type="password" id="customerPassword" name="PasswordHash" required>
-                
-                <button type="submit">Registrar Comprador</button>
-            </form>
-        </section>
+        <header>
+            <h1>Welcome to Small Cloth Shop</h1>
+            <p>Tu mejor opción para moda y estilo.</p>
+        </header>
 
-        <!-- Formulario para empleados -->
-        <section>
-            <h2>Registro de Empleados</h2>
-            <form id="employeeForm">
-                <label for="employeeFullName">Nombre Completo:</label>
-                <input type="text" id="employeeFullName" name="FullName" required>
-                
-                <label for="employeeUsername">Nombre de Usuario:</label>
-                <input type="text" id="employeeUsername" name="Username" required>
-                
-                <label for="employeePassword">Contraseña:</label>
-                <input type="password" id="employeePassword" name="PasswordHash" required>
-                
-                <button type="submit">Registrar Empleado</button>
-            </form>
-        </section>
+        <main>
+            <div class="buttons">
+                <button onclick="location.href='login.html'">Iniciar Sesión</button>
+                <button onclick="location.href='register.html'">Registrarse</button>
+            </div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Small Cloth Shop. Todos los derechos reservados.</p>
+        </footer>
     </div>
-
-    <script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Cliente</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Contenedor Principal -->
+    <div class="container">
+        <!-- Barra de Submenú -->
+        <nav class="submenu">
+            <button id="homeButton">Inicio</button>
+            <button id="profileButton">Ver Perfil</button>
+            <button id="purchasesButton">Ver Compras</button>
+            <button id="logoutButton">Cerrar Sesión</button>
+        </nav>
+
+        <!-- Contenido Principal -->
+        <div id="mainContent">
+            <h1>Bienvenido al Dashboard del Cliente</h1>
+            <p>Selecciona una opción en el menú para continuar.</p>
+        </div>
+    </div>
+
+    <script>
+        // Manejar los botones del submenú
+        document.getElementById("homeButton").addEventListener("click", () => {
+            document.getElementById("mainContent").innerHTML = `
+                <h1>Inicio</h1>
+                <p>Bienvenido al panel principal del cliente.</p>
+            `;
+        });
+
+        document.getElementById("profileButton").addEventListener("click", () => {
+            document.getElementById("mainContent").innerHTML = `
+                <h1>Ver Perfil</h1>
+                <p>Esta es la sección para ver tu perfil.</p>
+            `;
+        });
+
+        document.getElementById("purchasesButton").addEventListener("click", () => {
+            document.getElementById("mainContent").innerHTML = `
+                <h1>Ver Compras</h1>
+                <p>Aquí puedes ver el historial de tus compras.</p>
+            `;
+        });
+
+        document.getElementById("logoutButton").addEventListener("click", () => {
+            // Eliminar el token del almacenamiento local
+            localStorage.removeItem("token");
+            localStorage.removeItem("role");
+
+            // Redirigir al inicio de sesión
+            window.location.href = "login.html";
+        });
+
+        // Validar que el usuario esté autenticado
+        document.addEventListener("DOMContentLoaded", () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                alert("Debes iniciar sesión para acceder a esta página.");
+                window.location.href = "/login.html";
+            }
+        });
+    </script>
+</body>
+</html>
