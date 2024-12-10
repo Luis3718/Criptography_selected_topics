@@ -10,6 +10,7 @@ document.getElementById("customerForm").addEventListener("submit", async (e) => 
         CreditCardNumber: document.getElementById("customerCreditCardNumber").value,
         Username: document.getElementById("customerUsername").value,
         PasswordHash: document.getElementById("customerPassword").value,
+        salt: "",
     };
 
     try {
@@ -41,6 +42,7 @@ document.getElementById("employeeForm").addEventListener("submit", async (e) => 
         Username: document.getElementById("employeeUsername").value,
         PasswordHash: document.getElementById("employeePassword").value,
         PublicKeyECDSA: "", // Este campo será generado automáticamente
+        salt: "",
     };
 
     try {
