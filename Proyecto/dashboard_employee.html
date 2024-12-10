@@ -33,36 +33,7 @@
         });
 
         document.getElementById("reportButton").addEventListener("click", () => {
-            document.getElementById("mainContent").innerHTML = `
-                <h1>Generar Reporte</h1>
-                <p>Selecciona las opciones necesarias para generar un reporte.</p>
-                <form>
-                    <label for="dateRange">Rango de Fechas:</label>
-                    <input type="date" id="startDate"> a <input type="date" id="endDate">
-                    <button type="button" id="generateReportButton">Generar</button>
-                </form>
-            `;
-
-            document.getElementById("generateReportButton").addEventListener("click", async () => {
-                const token = localStorage.getItem("token");
-                const startDate = document.getElementById("startDate").value;
-                const endDate = document.getElementById("endDate").value;
-
-                const response = await fetch(`${apiBaseUrl}/reports`, {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${token}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({ start_date: startDate, end_date: endDate })
-                });
-
-                if (response.ok) {
-                    alert("Reporte generado correctamente.");
-                } else {
-                    alert("Error al generar el reporte.");
-                }
-            });
+            window.location.href = "report.html"
         });
 
         document.getElementById("profileButton").addEventListener("click", async () => {

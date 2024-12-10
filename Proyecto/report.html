@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Report</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Generate Monthly Report</h1>
+
+        <form id="reportForm" class="mt-4">
+            <div class="mb-3">
+                <label for="month" class="form-label">Select Month:</label>
+                <input type="month" id="month" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Generate Report</button>
+        </form>
+
+        <div class="mt-5" id="reportContainer" style="display: none;">
+            <h2 class="text-center">Monthly Report</h2>
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Employee Name</th>
+                        <th>Date of Sale</th>
+                        <th>Customer Name</th>
+                        <th>Credit Card Used</th>
+                        <th>Total Amount</th>
+                        <th>Products Sold</th>
+                    </tr>
+                </thead>
+                <tbody id="reportTableBody">
+                    <!-- Rows will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('reportForm').addEventListener('submit', async function (event) {
+            event.preventDefault(); // Prevent form from refreshing the page
+
+            const token = localStorage.getItem('token');
+            const month = document.getElementById('month').value;
+
+            if (!token) {
+                alert('You need to log in first.');
+                return;
+            }
+
+            try {
+                const response = await axios.get(`http://localhost:8000/employee/monthly_report?month=${month}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const report = response.data;
+                const tableBody = document.getElementById('reportTableBody');
+                tableBody.innerHTML = ''; // Clear previous report rows
+
+                if (report.length === 0) {
+                    alert('No transactions found for the selected month.');
+                    document.getElementById('reportContainer').style.display = 'none';
+                    return;
+                }
+
+                report.forEach(row => {
+                    const tableRow = `<tr>
+                        <td>${row.EmployeeName}</td>
+                        <td>${row.DateOfSale}</td>
+                        <td>${row.CustomerName}</td>
+                        <td>${row.CreditCardUsed}</td>
+                        <td>$${row.TotalAmount.toFixed(2)}</td>
+                        <td>${row.ProductsSold}</td>
+                    </tr>`;
+                    tableBody.innerHTML += tableRow;
+                });
+
+                document.getElementById('reportContainer').style.display = 'block';
+            } catch (error) {
+                console.error('Error generating report:', error);
+                alert('Failed to generate report. Please try again later.');
+            }
+        });
+    </script>
+</body>
+</html>

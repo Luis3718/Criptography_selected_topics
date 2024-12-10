@@ -1,6 +1,7 @@
 import os
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
+from sqlalchemy import func, text
 import crud, schemas, database, models
 from fastapi.security import OAuth2PasswordBearer
 
@@ -44,3 +45,65 @@ def download_private_key(employee_id: int):
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail="Private key not found")
     return FileResponse(file_path, media_type="application/x-pem-file", filename=f"private_key_{employee_id}.pem")
+
+@router.get("/monthly_report", response_model=list[dict])
+def get_monthly_report(
+    month: str,  # Formato esperado: YYYY-MM
+    token: str = Depends(oauth2_scheme),
+    db: Session = Depends(database.get_db),
+):
+    # Extraer EmployeeID desde el token
+    user_data = crud.get_employee_id_from_token(token)
+
+    if not user_data or user_data.get("role") != "employee":
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    employee_id = user_data.get("id")
+
+    # Query para obtener el reporte mensual
+    query = text(f"""
+        SELECT 
+            e.FullName AS EmployeeName,
+            t.DateOfSale,
+            c.FullName AS CustomerName,
+            CONCAT('**** **** **** ', RIGHT(t.CreditCardNumber, 4)) AS CreditCardUsed,
+            t.TotalAmount,
+            GROUP_CONCAT(CONCAT(p.ProductName, ' (x', td.Quantity, ')') SEPARATOR ', ') AS ProductsSold
+        FROM 
+            Transactions t
+        JOIN 
+            Employees e ON t.EmployeeID = e.EmployeeID
+        JOIN 
+            Customers c ON t.CustomerID = c.CustomerID
+        JOIN 
+            TransactionDetails td ON t.TransactionID = td.TransactionID
+        JOIN 
+            Products p ON td.ProductID = p.ProductID
+        WHERE 
+            DATE_FORMAT(t.DateOfSale, '%Y-%m') = :month
+            AND e.EmployeeID = :employee_id
+        GROUP BY 
+            t.TransactionID
+        ORDER BY 
+            t.DateOfSale
+    """)
+
+    results = db.execute(query, {"month": month, "employee_id": employee_id}).fetchall()
+
+    # Convertir resultados en un formato legible
+    report = [
+        {
+            "EmployeeName": row.EmployeeName,
+            "DateOfSale": row.DateOfSale.strftime("%Y-%m-%d %H:%M:%S"),
+            "CustomerName": row.CustomerName,
+            "CreditCardUsed": row.CreditCardUsed,
+            "TotalAmount": float(row.TotalAmount),
+            "ProductsSold": row.ProductsSold,
+        }
+        for row in results
+    ]
+
+    if not report:
+        raise HTTPException(status_code=404, detail="No transactions found for the specified month")
+
+    return report

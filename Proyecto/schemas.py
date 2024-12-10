@@ -35,3 +35,11 @@ class Transaction(BaseModel):
         json_encoders = {
             datetime: lambda v: v.isoformat(),  # Convierte datetime a string en formato ISO 8601
         }
+
+class MonthlyReport(BaseModel):
+    EmployeeName: str
+    DateOfSale: str
+    CustomerName: str
+    CreditCardUsed: str
+    TotalAmount: float
+    ProductsSold: str
