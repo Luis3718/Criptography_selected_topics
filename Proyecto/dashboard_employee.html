@@ -29,26 +29,7 @@
 
         // Manejar los botones del submenú
         document.getElementById("transactionsButton").addEventListener("click", async () => {
-            const token = localStorage.getItem("token");
-            const response = await fetch(`${apiBaseUrl}/transactions`, {
-                method: "GET",
-                headers: {
-                    "Authorization": `Bearer ${token}`
-                }
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                document.getElementById("mainContent").innerHTML = `
-                    <h1>Transacciones</h1>
-                    <pre>${JSON.stringify(data, null, 2)}</pre>
-                `;
-            } else {
-                document.getElementById("mainContent").innerHTML = `
-                    <h1>Error</h1>
-                    <p>No se pudieron cargar las transacciones.</p>
-                `;
-            }
+            window.location.href = "transactionsE.html";
         });
 
         document.getElementById("reportButton").addEventListener("click", () => {

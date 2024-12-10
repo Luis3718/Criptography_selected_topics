@@ -1,10 +1,32 @@
-from fastapi import APIRouter, Depends, HTTPException
-from fastapi.responses import FileResponse
-from sqlalchemy.orm import Session
-import crud, schemas, database
 import os
+from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy.orm import Session
+import crud, schemas, database, models
+from fastapi.security import OAuth2PasswordBearer
 
 router = APIRouter()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
+@router.get("/transactions", response_model=list[schemas.Transaction])
+def get_employee_transactions(
+    db: Session = Depends(database.get_db),
+    token: str = Depends(oauth2_scheme),
+):
+    # Extraer EmployeeID desde el token
+    user_data = crud.get_employee_id_from_token(token)
+
+    if not user_data or user_data.get("role") != "employee":
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    employee_id = user_data.get("id")
+
+    # Obtener las transacciones del empleado
+    transactions = db.query(models.Transaction).filter(models.Transaction.EmployeeID == employee_id).all()
+
+    if not transactions:
+        raise HTTPException(status_code=404, detail="No transactions found for this employee")
+
+    return transactions
 
 @router.post("/")
 def register_employee(employee: schemas.EmployeeCreate, db: Session = Depends(database.get_db)):

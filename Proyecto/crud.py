@@ -65,3 +65,19 @@ def get_customer_id_from_token(token: str) -> int:
     except InvalidTokenError:
         raise HTTPException(status_code=401, detail="Invalid token")
 
+def get_employee_id_from_token(token: str) -> dict:
+    import jwt
+    from jwt.exceptions import ExpiredSignatureError, InvalidTokenError
+
+    SECRET_KEY = "your_secret_key"
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
+        role = payload.get("role")
+        employee_id = payload.get("id")
+        if not role or not employee_id:
+            raise HTTPException(status_code=401, detail="Invalid token payload")
+        return {"role": role, "id": employee_id}
+    except ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expired. Please log in again.")
+    except InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Invalid token")

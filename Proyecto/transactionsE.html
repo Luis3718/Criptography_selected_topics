@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Employee Sales</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">My Sales</h1>
+
+        <table class="table table-bordered mt-4">
+            <thead class="table-dark">
+                <tr>
+                    <th>Transaction ID</th>
+                    <th>Date of Sale</th>
+                    <th>Total Amount</th>
+                    <th>Customer ID</th>
+                </tr>
+            </thead>
+            <tbody id="transactions-table-body">
+                <!-- Rows will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Fetch the sales for the logged-in employee
+        document.addEventListener('DOMContentLoaded', async () => {
+            const token = localStorage.getItem('token'); // Retrieve the token from local storage
+            const tableBody = document.getElementById('transactions-table-body');
+
+            if (!token) {
+                alert('You need to log in first.');
+                return;
+            }
+
+            try {
+                const response = await axios.get('http://localhost:8000/employee/transactions', {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const transactions = response.data;
+
+                if (transactions.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="4" class="text-center">No sales found</td></tr>';
+                    return;
+                }
+
+                transactions.forEach(transaction => {
+                    const row = `<tr>
+                        <td>${transaction.TransactionID}</td>
+                        <td>${new Date(transaction.DateOfSale).toLocaleString()}</td>
+                        <td>$${transaction.TotalAmount.toFixed(2)}</td>
+                        <td>${transaction.CustomerID}</td>
+                    </tr>`;
+                    tableBody.innerHTML += row;
+                });
+
+            } catch (error) {
+                console.error('Error fetching sales:', error);
+                alert('Failed to load sales. Please try again later.');
+            }
+        });
+    </script>
+</body>
+</html>
