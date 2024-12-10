@@ -9,7 +9,8 @@ CREATE TABLE Customers (
     PhoneNumber VARCHAR(15) NOT NULL,
     CreditCardNumber VARCHAR(255) NOT NULL, -- Este campo debe estar encriptado en la aplicación
     Username VARCHAR(255) UNIQUE NOT NULL,
-    PasswordHash VARCHAR(255) NOT NULL -- Almacenar contraseñas de manera segura (hash)
+    PasswordHash VARCHAR(255) NOT NULL, -- Almacenar contraseñas de manera segura (hash)
+    Salt VARCHAR(32) NOT NULL
 );
 
 -- Crear la tabla Employees (Empleados) con datos personales, de login y llave pública de ECDSA
@@ -18,7 +19,8 @@ CREATE TABLE Employees (
     FullName VARCHAR(255) NOT NULL,
     Username VARCHAR(255) UNIQUE NOT NULL,
     PasswordHash VARCHAR(255) NOT NULL, -- Almacenar contraseñas de manera segura (hash)
-    PublicKeyECDSA TEXT NOT NULL -- Almacenar la llave pública de ECDSA en formato PEM o similar
+    PublicKeyECDSA TEXT NOT NULL, -- Almacenar la llave pública de ECDSA en formato PEM o similar
+    Salt VARCHAR(32) NOT NULL
 );
 
 -- Crear la tabla AdminUsers (Administradores) independiente
