@@ -69,3 +69,15 @@ CREATE TABLE MonthlySalesReports (
     FOREIGN KEY (EmployeeID) REFERENCES Employees(EmployeeID)
 );
 
+-- Datos para poblar la base de datos
+INSERT INTO Products (ProductName, Price)
+VALUES ('Playera verde', 200.00), 
+       ('Playera roja', 200.00),
+       ('Playera gris', 200.00),
+       ('Playera cafe', 200.00),
+       ('Playera azul', 200.00),
+       ('Pantalon azul', 250.00),
+       ('Pantalon gris', 250.00),
+       ('Playera negro', 250.00),
+       ('Cartera', 100.00);
+
