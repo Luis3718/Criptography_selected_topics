@@ -1,0 +1,7 @@
+# Ignorar archivos compilados de Python
+*.pyc
+
+# Ignorar claves y certificados
+*.pem
+
+__pycache__/

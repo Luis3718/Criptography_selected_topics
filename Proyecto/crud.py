@@ -1,9 +1,13 @@
 from sqlalchemy.orm import Session
 import models, schemas
+from fpe import encrypt_card_number, generate_salt  # Importa el módulo FPE y generación de Salt
 from custom_hashing import hash_password
-from ECDSA import generate_ecdsa_keys  # Importar la función para generar llaves ECDSA
+from ECDSA import generate_ecdsa_keys
 
 def create_employee(db: Session, employee: schemas.EmployeeCreate):
+    # Generar un Salt único para FPE
+    employee.Salt = generate_salt()
+    
     # Hashear la contraseña
     employee.PasswordHash = hash_password(employee.PasswordHash)
 
@@ -26,6 +30,16 @@ def create_employee(db: Session, employee: schemas.EmployeeCreate):
 
 
 def create_customer(db: Session, customer: schemas.CustomerCreate):
+    # Generar un Salt único para FPE
+    customer.Salt = generate_salt()
+
+    # Cifrar el número de tarjeta de crédito con FPE
+    customer.CreditCardNumber = encrypt_card_number(
+        card_number=customer.CreditCardNumber,
+        password=customer.Username,  # Usa un dato relacionado con el usuario
+        salt=customer.Salt
+    )
+
     # Hashear la contraseña
     customer.PasswordHash = hash_password(customer.PasswordHash)
     db_customer = models.Customer(**customer.dict())

@@ -11,6 +11,7 @@ class Customer(Base):
     CreditCardNumber = Column(String(255), nullable=False)
     Username = Column(String(255), unique=True, nullable=False)
     PasswordHash = Column(String(255), nullable=False)
+    Salt = Column(String(32), nullable=False)
 
 # Modelo de Empleado para SQLAlchemy
 class Employee(Base):
@@ -20,3 +21,4 @@ class Employee(Base):
     Username = Column(String(255), unique=True, nullable=False)
     PasswordHash = Column(String(255), nullable=False)
     PublicKeyECDSA = Column(Text, nullable=False)
+    Salt = Column(String(32), nullable=False)
