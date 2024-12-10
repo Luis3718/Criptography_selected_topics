@@ -4,4 +4,5 @@
 # Ignorar claves y certificados
 *.pem
 
+# Ignorar la carpeta __pycache__
 __pycache__/

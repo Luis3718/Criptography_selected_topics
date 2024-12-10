@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Inicio de Sesión</h1>
+        <form id="loginForm">
+            <label for="username">Nombre de Usuario:</label>
+            <input type="text" id="username" name="username" required placeholder="Ingresa tu usuario">
+            
+            <label for="password">Contraseña:</label>
+            <input type="password" id="password" name="password" required placeholder="Ingresa tu contraseña">
+            
+            <button type="submit">Iniciar Sesión</button>
+        </form>
+        <p id="message" style="color: red;"></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+<script>
+const apiBaseUrl = "http://127.0.0.1:8000";
+
+fetch(`${apiBaseUrl}/auth/login`, {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+        username: "user",
+        password: "password",
+    }),
+})
+    .then((response) => response.json())
+    .then((data) => {
+        console.log(data);
+    })
+    .catch((error) => {
+        console.error("Error:", error);
+    });
+
+
+
+// URL del backend para login
+const loginEndpoint = "http://127.0.0.1:8000/auth/login";
+
+document.getElementById("loginForm").addEventListener("submit", async function (event) {
+    event.preventDefault(); // Evita que el formulario recargue la página
+
+    // Obtener valores del formulario
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("password").value;
+
+    try {
+        // Enviar solicitud POST al backend
+        const response = await fetch(loginEndpoint, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
+        });
+
+        // Manejar respuesta
+        if (response.ok) {
+            const result = await response.json();
+            const token = result.access_token;
+            const role = result.role;
+
+            // Guardar token en localStorage
+            localStorage.setItem("token", token);
+            localStorage.setItem("role", role);
+
+            // Redirigir según el rol
+            if (role === "employee") {
+                window.location.href = "dashboard_employee.html";
+            } else if (role === "customer") {
+                window.location.href = "dashboard_customer.html";
+            }
+        } else {
+            const error = await response.json();
+            document.getElementById("message").textContent = error.detail || "Error al iniciar sesión";
+        }
+    } catch (error) {
+        document.getElementById("message").textContent = "Error de conexión con el servidor";
+    }
+});
+
+</script>
+</html>

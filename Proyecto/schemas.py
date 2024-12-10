@@ -17,3 +17,7 @@ class EmployeeCreate(BaseModel):
     PasswordHash: str
     PublicKeyECDSA: Optional[str] = None  # Hacer opcional
     Salt: Optional[str] = None  # Hacer opcional
+
+class LoginRequest(BaseModel):
+    username: str
+    password: str

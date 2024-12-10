@@ -3,73 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register</title>
+    <title>Registro de Compradores y Empleados</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="register-container">
-        <h2>Register</h2>
-        <form id="registerForm">
-            <input type="text" id="username" name="username" placeholder="Username" required>
-            <input type="password" id="password" name="password" placeholder="Password" required>
-            <select id="role" name="role" required>
-                <option value="customer">Customer</option>
-                <option value="employee">Employee</option>
-                <option value="admin">Admin</option>
-            </select>
-            <input type="number" id="id" name="id" placeholder="Customer/Employee ID" required>
-            <button type="submit">Register</button>
-        </form>
-        <div id="error" class="error"></div>
-        <div id="success" class="success"></div>
+    <div class="container">
+        <h1>Registro de Usuarios</h1>
+        
+        <!-- Formulario para compradores -->
+        <section>
+            <h2>Registro de Compradores</h2>
+            <form id="customerForm">
+                <label for="customerFullName">Nombre Completo:</label>
+                <input type="text" id="customerFullName" name="FullName" required>
+                
+                <label for="customerPhoneNumber">Teléfono:</label>
+                <input type="text" id="customerPhoneNumber" name="PhoneNumber" required>
+                
+                <label for="customerCreditCardNumber">Tarjeta de Crédito:</label>
+                <input type="text" id="customerCreditCardNumber" name="CreditCardNumber" required>
+                
+                <label for="customerUsername">Nombre de Usuario:</label>
+                <input type="text" id="customerUsername" name="Username" required>
+                
+                <label for="customerPassword">Contraseña:</label>
+                <input type="password" id="customerPassword" name="PasswordHash" required>
+                
+                <button type="submit">Registrar Comprador</button>
+            </form>
+        </section>
+
+        <!-- Formulario para empleados -->
+        <section>
+            <h2>Registro de Empleados</h2>
+            <form id="employeeForm">
+                <label for="employeeFullName">Nombre Completo:</label>
+                <input type="text" id="employeeFullName" name="FullName" required>
+                
+                <label for="employeeUsername">Nombre de Usuario:</label>
+                <input type="text" id="employeeUsername" name="Username" required>
+                
+                <label for="employeePassword">Contraseña:</label>
+                <input type="password" id="employeePassword" name="PasswordHash" required>
+                
+                <button type="submit">Registrar Empleado</button>
+            </form>
+        </section>
     </div>
 
-    <script>
-        document.getElementById("registerForm").addEventListener("submit", async (e) => {
-            e.preventDefault(); // Prevent form submission
-
-            // Get form data
-            const username = document.getElementById("username").value;
-            const password = document.getElementById("password").value;
-            const role = document.getElementById("role").value;
-            const id = document.getElementById("id").value;
-
-            // Determine endpoint based on role
-            let endpoint = "";
-            let bodyData = {};
-
-            if (role === "customer") {
-                endpoint = "http://127.0.0.1:8000/register/customer";
-                bodyData = { username, password, customer_id: id };
-            } else if (role === "employee" || role === "admin") {
-                endpoint = "http://127.0.0.1:8000/register/employee";
-                bodyData = { username, password, employee_id: id, role };
-            }
-
-            // Make a POST request to the FastAPI registration endpoint
-            try {
-                const response = await fetch(endpoint, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(bodyData),
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    document.getElementById("success").textContent = data.message;
-                    document.getElementById("error").textContent = "";
-                } else {
-                    const error = await response.json();
-                    document.getElementById("error").textContent = error.detail;
-                    document.getElementById("success").textContent = "";
-                }
-            } catch (err) {
-                document.getElementById("error").textContent = "An error occurred. Please try again.";
-                console.error(err);
-            }
-        });
-    </script>
+    <script src="script.js"></script>
 </body>
 </html>
