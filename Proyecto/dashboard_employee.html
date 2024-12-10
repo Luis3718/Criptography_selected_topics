@@ -25,12 +25,30 @@
     </div>
 
     <script>
+        const apiBaseUrl = "http://127.0.0.1:8000";
+
         // Manejar los botones del submenú
-        document.getElementById("transactionsButton").addEventListener("click", () => {
-            document.getElementById("mainContent").innerHTML = `
-                <h1>Ver Transacciones</h1>
-                <p>Aquí puedes consultar todas las transacciones realizadas.</p>
-            `;
+        document.getElementById("transactionsButton").addEventListener("click", async () => {
+            const token = localStorage.getItem("token");
+            const response = await fetch(`${apiBaseUrl}/transactions`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById("mainContent").innerHTML = `
+                    <h1>Transacciones</h1>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } else {
+                document.getElementById("mainContent").innerHTML = `
+                    <h1>Error</h1>
+                    <p>No se pudieron cargar las transacciones.</p>
+                `;
+            }
         });
 
         document.getElementById("reportButton").addEventListener("click", () => {
@@ -44,35 +62,60 @@
                 </form>
             `;
 
-            // Acción para el botón de generar reporte
-            document.getElementById("generateReportButton").addEventListener("click", () => {
-                alert("Reporte generado correctamente.");
+            document.getElementById("generateReportButton").addEventListener("click", async () => {
+                const token = localStorage.getItem("token");
+                const startDate = document.getElementById("startDate").value;
+                const endDate = document.getElementById("endDate").value;
+
+                const response = await fetch(`${apiBaseUrl}/reports`, {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`,
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ start_date: startDate, end_date: endDate })
+                });
+
+                if (response.ok) {
+                    alert("Reporte generado correctamente.");
+                } else {
+                    alert("Error al generar el reporte.");
+                }
             });
         });
 
-        document.getElementById("profileButton").addEventListener("click", () => {
-            document.getElementById("mainContent").innerHTML = `
-                <h1>Ver Perfil</h1>
-                <p>Aquí puedes ver la información de tu perfil.</p>
-            `;
+        document.getElementById("profileButton").addEventListener("click", async () => {
+            const token = localStorage.getItem("token");
+            const response = await fetch(`${apiBaseUrl}/profile`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById("mainContent").innerHTML = `
+                    <h1>Perfil</h1>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } else {
+                alert("Error al cargar el perfil.");
+            }
         });
 
         document.getElementById("logoutButton").addEventListener("click", () => {
-            // Eliminar el token del almacenamiento local
             localStorage.removeItem("token");
             localStorage.removeItem("role");
-
-            // Redirigir al inicio de sesión
             window.location.href = "login.html";
         });
 
-        // Validar que el usuario esté autenticado
         document.addEventListener("DOMContentLoaded", () => {
             const token = localStorage.getItem("token");
             const role = localStorage.getItem("role");
             if (!token || role !== "employee") {
                 alert("Debes iniciar sesión como empleado para acceder a esta página.");
-                window.location.href = "/login.html";
+                window.location.href = "login.html";
             }
         });
     </script>

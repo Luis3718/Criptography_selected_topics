@@ -25,43 +25,69 @@
     </div>
 
     <script>
-        // Manejar los botones del submenú
+        const apiBaseUrl = "http://127.0.0.1:8000";
+    
         document.getElementById("homeButton").addEventListener("click", () => {
             document.getElementById("mainContent").innerHTML = `
                 <h1>Inicio</h1>
                 <p>Bienvenido al panel principal del cliente.</p>
             `;
         });
-
-        document.getElementById("profileButton").addEventListener("click", () => {
-            document.getElementById("mainContent").innerHTML = `
-                <h1>Ver Perfil</h1>
-                <p>Esta es la sección para ver tu perfil.</p>
-            `;
+    
+        document.getElementById("profileButton").addEventListener("click", async () => {
+            const token = localStorage.getItem("token");
+            const response = await fetch(`${apiBaseUrl}/profile`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById("mainContent").innerHTML = `
+                    <h1>Perfil</h1>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } else {
+                alert("Error al cargar el perfil.");
+            }
         });
-
-        document.getElementById("purchasesButton").addEventListener("click", () => {
-            document.getElementById("mainContent").innerHTML = `
-                <h1>Ver Compras</h1>
-                <p>Aquí puedes ver el historial de tus compras.</p>
-            `;
+    
+        document.getElementById("purchasesButton").addEventListener("click", async () => {
+            const token = localStorage.getItem("token");
+            const response = await fetch(`${apiBaseUrl}/purchases`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+    
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById("mainContent").innerHTML = `
+                    <h1>Compras</h1>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
+                `;
+            } else {
+                document.getElementById("mainContent").innerHTML = `
+                    <h1>Error</h1>
+                    <p>No se pudieron cargar las compras.</p>
+                `;
+            }
         });
-
+    
         document.getElementById("logoutButton").addEventListener("click", () => {
-            // Eliminar el token del almacenamiento local
             localStorage.removeItem("token");
             localStorage.removeItem("role");
-
-            // Redirigir al inicio de sesión
             window.location.href = "login.html";
         });
-
-        // Validar que el usuario esté autenticado
+    
         document.addEventListener("DOMContentLoaded", () => {
             const token = localStorage.getItem("token");
             if (!token) {
                 alert("Debes iniciar sesión para acceder a esta página.");
-                window.location.href = "/login.html";
+                window.location.href = "login.html";
             }
         });
     </script>
