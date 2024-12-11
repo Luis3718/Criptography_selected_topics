@@ -1,5 +1,3 @@
-Hola me podrias ayudar a crear un endpoint que me permita ver las transacciones de mi customer mediante su id mi base de datos es la siguiente:
-
 -- Crear la base de datos
 CREATE DATABASE Tienda;
 USE Tienda;

@@ -46,7 +46,7 @@ document.getElementById("employeeForm").addEventListener("submit", async (e) => 
     };
 
     try {
-        const response = await fetch(`${apiBaseURL}/employees/`, {
+        const response = await fetch(`${apiBaseURL}/employee/`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(employeeData),

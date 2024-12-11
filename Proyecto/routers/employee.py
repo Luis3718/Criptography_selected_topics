@@ -1,5 +1,6 @@
 import os
 from fastapi import APIRouter, Depends, HTTPException
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import func, text
 import crud, schemas, database, models
@@ -32,7 +33,7 @@ def get_employee_transactions(
 @router.post("/")
 def register_employee(employee: schemas.EmployeeCreate, db: Session = Depends(database.get_db)):
     db_employee, private_key_path = crud.create_employee(db, employee)
-    private_key_url = f"/employees/download_private_key/{db_employee.EmployeeID}"
+    private_key_url = f"/employee/download_private_key/{db_employee.EmployeeID}"
     return {
         "message": "Employee created successfully",
         "employee_id": db_employee.EmployeeID,
