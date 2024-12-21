@@ -3,6 +3,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import func, text
+from report import print_report, save_report_to_pdf
 import crud, schemas, database, models
 from fastapi.security import OAuth2PasswordBearer
 
@@ -106,5 +107,10 @@ def get_monthly_report(
 
     if not report:
         raise HTTPException(status_code=404, detail="No transactions found for the specified month")
+
+    print_report(report)
+    
+ # Guardar el informe en PDF
+    save_report_to_pdf(report, file_name=f"monthly_report_{employee_id}.pdf")
 
     return report
