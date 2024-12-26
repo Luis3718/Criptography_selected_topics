@@ -2,13 +2,14 @@ import os
 from cryptography.hazmat.primitives.kdf.pbkdf2 import PBKDF2HMAC
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
+from Crypto.Random import get_random_bytes
 from ff3 import FF3Cipher
 
 def generate_salt() -> str:
     """
     Genera un salt único de 16 bytes en formato hexadecimal.
     """
-    return os.urandom(16).hex()
+    return get_random_bytes(16).hex()
 
 def derive_key(password: str, salt: str, key_length: int = 16) -> str:
     """

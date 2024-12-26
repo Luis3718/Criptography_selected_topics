@@ -107,10 +107,8 @@ def get_monthly_report(
 
     if not report:
         raise HTTPException(status_code=404, detail="No transactions found for the specified month")
-
-    print_report(report)
     
- # Guardar el informe en PDF
-    save_report_to_pdf(report, file_name=f"monthly_report_{employee_id}.pdf")
+    # Guardar el informe en PDF
+    #save_report_to_pdf(report, file_name=f"monthly_report_{employee_id}.pdf")
 
     return report
