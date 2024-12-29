@@ -3,12 +3,18 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from sqlalchemy import func, text
-from report import print_report, save_report_to_pdf
+from report import save_report_to_pdf, guardar_firma, sign_data
+from ECDSA import calcular_hash
 import crud, schemas, database, models
 from fastapi.security import OAuth2PasswordBearer
+from pydantic import BaseModel
 
 router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
+
+class SignReportRequest(BaseModel):
+    report_data: list[dict]  # Lista de filas de datos del reporte
+    private_key: str  # Clave privada como texto PEM
 
 @router.get("/transactions", response_model=list[schemas.Transaction])
 def get_employee_transactions(
@@ -107,8 +113,53 @@ def get_monthly_report(
 
     if not report:
         raise HTTPException(status_code=404, detail="No transactions found for the specified month")
-    
-    # Guardar el informe en PDF
-    #save_report_to_pdf(report, file_name=f"monthly_report_{employee_id}.pdf")
 
     return report
+
+@router.post("/sign_report")
+def sign_report(
+    request: SignReportRequest,  # Usa el modelo de Pydantic
+    db: Session = Depends(database.get_db),
+    token: str = Depends(oauth2_scheme),
+):
+    # Validar el token y obtener información del usuario
+    user_data = crud.get_employee_id_from_token(token)
+    if not user_data or user_data.get("role") != "employee":
+        raise HTTPException(status_code=403, detail="Access denied")
+
+    employee_id = user_data.get("id")
+
+    # Guardar el reporte como PDF
+    file_name = f"monthly_report_{employee_id}.pdf"
+    save_report_to_pdf(request.report_data, file_name)
+
+    # Calcular el hash del PDF
+    hash_data = calcular_hash(file_name)
+
+    # Firmar el hash usando la clave privada
+    try:
+        signature = sign_data(request.private_key, hash_data)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error signing report: {str(e)}")
+
+    # Guardar la firma en el PDF
+    output_file = f"signed_report_{employee_id}.pdf"
+    guardar_firma(file_name, output_file, signature, remitente="EmployeeSignature")
+
+    return {
+        "message": "Report signed successfully",
+        "signed_report": output_file,
+        "signature": signature.hex()
+    }
+
+    
+
+@router.get("/download_report_sign/{employee_id}")
+def download_private_key(employee_id: int):
+    # Guardar el informe en PDF
+    save_report_to_pdf(report, file_name=f"monthly_report_{employee_id}.pdf")
+    
+    file_path = f"private_keys/private_key_{employee_id}.pem"  # Ruta relativa correcta
+    if not os.path.exists(file_path):
+        raise HTTPException(status_code=404, detail="Private key not found")
+    return FileResponse(file_path, media_type="application/x-pem-file", filename=f"private_key_{employee_id}.pem")
