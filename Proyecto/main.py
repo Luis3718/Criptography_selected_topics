@@ -23,5 +23,6 @@ app.add_middleware(
 app.include_router(customer.router, prefix="/customers", tags=["Customers"])
 app.include_router(employee.router, prefix="/employee", tags=["Employee"])
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+app.mount("/reports", StaticFiles(directory="reports"), name="reports")
 #app.include_router(customer.router, prefix="/customer", tags=["Customer Operations"])
 #app.include_router(employee.router, prefix="/employee", tags=["Employee Operations"])

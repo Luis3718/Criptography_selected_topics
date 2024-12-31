@@ -1,4 +1,6 @@
 import os
+import re
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
@@ -15,6 +17,13 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/login")
 class SignReportRequest(BaseModel):
     report_data: list[dict]  # Lista de filas de datos del reporte
     private_key: str  # Clave privada como texto PEM
+
+
+def sanitize_filename(filename: str) -> str:
+    """
+    Sanitiza el nombre del archivo para eliminar caracteres no válidos en sistemas de archivos.
+    """
+    return re.sub(r'[<>:"/\\|?*]', '_', filename)
 
 @router.get("/transactions", response_model=list[schemas.Transaction])
 def get_employee_transactions(
@@ -118,7 +127,7 @@ def get_monthly_report(
 
 @router.post("/sign_report")
 def sign_report(
-    request: SignReportRequest,  # Usa el modelo de Pydantic
+    request: SignReportRequest,
     db: Session = Depends(database.get_db),
     token: str = Depends(oauth2_scheme),
 ):
@@ -129,12 +138,23 @@ def sign_report(
 
     employee_id = user_data.get("id")
 
+    # Crear la carpeta "reports" si no existe
+    reports_folder = os.path.join(os.getcwd(), "reports")
+    os.makedirs(reports_folder, exist_ok=True)
+
+    # Obtener la fecha actual en formato YYYY-MM-DD
+    report_date = datetime.now().strftime("%Y-%m-%d")
+
+    # Generar el nombre del archivo para el reporte
+    base_file_name = f"Reporte_{report_date}_{employee_id}"
+    file_name = f"{base_file_name}.pdf"
+    file_path = os.path.join(reports_folder, file_name)
+
     # Guardar el reporte como PDF
-    file_name = f"monthly_report_{employee_id}.pdf"
-    save_report_to_pdf(request.report_data, file_name)
+    save_report_to_pdf(request.report_data, file_path)
 
     # Calcular el hash del PDF
-    hash_data = calcular_hash(file_name)
+    hash_data = calcular_hash(file_path)
 
     # Firmar el hash usando la clave privada
     try:
@@ -142,17 +162,19 @@ def sign_report(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error signing report: {str(e)}")
 
+    # Generar el nombre del archivo firmado
+    signed_file_name = f"{base_file_name}_signed.pdf"
+    signed_file_path = os.path.join(reports_folder, signed_file_name)
+
     # Guardar la firma en el PDF
-    output_file = f"signed_report_{employee_id}.pdf"
-    guardar_firma(file_name, output_file, signature, remitente="EmployeeSignature")
+    guardar_firma(file_path, signed_file_path, signature, remitente="EmployeeSignature")
 
     return {
         "message": "Report signed successfully",
-        "signed_report": output_file,
+        "signed_report": signed_file_name,
         "signature": signature.hex()
     }
 
-    
 
 @router.get("/download_report_sign/{employee_id}")
 def download_private_key(employee_id: int):
