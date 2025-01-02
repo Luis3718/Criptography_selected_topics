@@ -1,6 +1,7 @@
 from fpdf import FPDF
 from datetime import datetime
 from PyPDF2 import PdfReader, PdfWriter
+from PyPDF2.generic import NameObject, createStringObject
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives import serialization, hashes
 from cryptography.hazmat.primitives.asymmetric.utils import decode_dss_signature, encode_dss_signature
@@ -72,6 +73,7 @@ def sign_data(private_key_pem, hash_data):
     )
     return signature
 
+# Funcion que guarda una firma dentro de los metadatos de un archivo
 def guardar_firma(input_pdf, output_pdf, signature, remitente):
     reader = PdfReader(input_pdf)
     writer = PdfWriter()
@@ -79,12 +81,15 @@ def guardar_firma(input_pdf, output_pdf, signature, remitente):
     for page in reader.pages:
         writer.add_page(page)
 
+    # Agregar la firma como metadato
     info_dict = reader.metadata
-    new_info_dict = {**info_dict, remitente: signature.hex()}
+    new_info_dict = {**info_dict, f"/{remitente}": signature.hex()}
     writer.add_metadata(new_info_dict)
 
+    # Guardar el PDF con los metadatos actualizados
     with open(output_pdf, 'wb') as f:
         writer.write(f)
+
 
 def extract_signature_from_pdf(signed_pdf, remitente):
     reader = PdfReader(signed_pdf)

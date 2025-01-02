@@ -142,8 +142,12 @@ def sign_report(
     reports_folder = os.path.join(os.getcwd(), "reports")
     os.makedirs(reports_folder, exist_ok=True)
 
-    # Obtener la fecha actual en formato YYYY-MM-DD
-    report_date = datetime.now().strftime("%Y-%m-%d")
+    # Obtener el año y mes de las transacciones
+    if request.report_data:
+        transaction_dates = [datetime.strptime(row["DateOfSale"], "%Y-%m-%d %H:%M:%S") for row in request.report_data]
+        report_date = min(transaction_dates).strftime("%Y-%m")  # Solo año y mes
+    else:
+        raise HTTPException(status_code=400, detail="No transactions provided in the report data.")
 
     # Generar el nombre del archivo para el reporte
     base_file_name = f"Reporte_{report_date}_{employee_id}"
@@ -155,6 +159,7 @@ def sign_report(
 
     # Calcular el hash del PDF
     hash_data = calcular_hash(file_path)
+    print(f"Hash calculado: {hash_data.hex()}")
 
     # Firmar el hash usando la clave privada
     try:
@@ -162,17 +167,18 @@ def sign_report(
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error signing report: {str(e)}")
 
+    print(f"Firma generada: {signature.hex()}")
     # Generar el nombre del archivo firmado
     signed_file_name = f"{base_file_name}_signed.pdf"
     signed_file_path = os.path.join(reports_folder, signed_file_name)
 
     # Guardar la firma en el PDF
-    guardar_firma(file_path, signed_file_path, signature, remitente="EmployeeSignature")
+    guardar_firma(file_path, signed_file_path, signature, "empleado")
 
     return {
         "message": "Report signed successfully",
         "signed_report": signed_file_name,
-        "signature": signature.hex()
+        "signature": signature.hex(),
     }
 
 

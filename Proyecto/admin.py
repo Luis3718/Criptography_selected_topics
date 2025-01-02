@@ -3,33 +3,22 @@ from PyPDF2 import PdfReader
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.serialization import load_pem_public_key
+from cryptography.hazmat.primitives.asymmetric.utils import decode_dss_signature
+from cryptography.exceptions import InvalidSignature
 from database import get_db
 from sqlalchemy.orm import Session
 from sqlalchemy.sql import text
 
 def read_metadata(file_path):
-    """Read metadata from a PDF file."""
     try:
-        if not os.path.exists(file_path):
-            print(f"Error: The file {file_path} does not exist.")
-            return None
-
-        if not file_path.lower().endswith('.pdf'):
-            print(f"Error: The file {file_path} is not a valid PDF.")
-            return None
-
         reader = PdfReader(file_path)
         metadata = reader.metadata
-        if metadata is None:
-            print("No metadata found in the PDF file.")
-            return {}
-        return {key: str(value) for key, value in metadata.items() if value is not None}
-    except FileNotFoundError:
-        print(f"File not found: {file_path}")
-        return None
+        print(f"Metadatos encontrados: {metadata}")  # Depuración
+        return metadata
     except Exception as e:
-        print(f"Error reading metadata: {e}")
+        print(f"Error leyendo los metadatos: {e}")
         return None
+
 
 def calcular_hash(ruta_archivo):
     """Calculate the hash of a file."""
@@ -61,16 +50,20 @@ def verify_signature(file_path, public_key_pem, signature):
 
         # Calculate the hash of the file
         file_hash = calcular_hash(file_path)
+        print(f"Hash calculado: {file_hash.hex()}")
 
-        # Verify the signature
+        # Verify the signature (no need to decode DER here)
         public_key.verify(
             signature,
             file_hash,
             ec.ECDSA(hashes.SHA256())
         )
         return True
+    except InvalidSignature:
+        print("La firma no es válida.")
+        return False
     except Exception as e:
-        print(f"Signature verification failed: {e}")
+        print(f"Error en la verificación: {e}")
         return False
 
 if __name__ == "__main__":
@@ -78,7 +71,7 @@ if __name__ == "__main__":
     file_to_check = input("Enter the name of the file to verify: ").strip()
 
     # Define the path within the "Proyecto/reports" directory
-    project_reports_path = os.path.join(os.getcwd(), "Proyecto", "reports", file_to_check)
+    project_reports_path = os.path.join(os.getcwd(), "reports", file_to_check)
     
     if not os.path.exists(project_reports_path):
         print(f"File {file_to_check} does not exist in the 'Proyecto/reports' folder.")
@@ -97,21 +90,24 @@ if __name__ == "__main__":
 
         # Read metadata from the PDF
         metadata = read_metadata(project_reports_path)
-        print(metadata)
         if not metadata:
             print("Failed to retrieve metadata from the PDF.")
             exit(1)
 
-        # Extract the signature from metadata
-        signature_hex = metadata.get('EmployeeSignature')
-        if not signature_hex:
-            print("No signature found in the PDF metadata under 'EmployeeSignature'.")
-            exit(1)
-
-        try:
-            signature = bytes.fromhex(signature_hex)
-        except ValueError:
-            print("Invalid signature format in the metadata.")
+        # Use the correct key for the signature
+        signature_hex = metadata.get("/empleado")
+        if signature_hex:
+            try:
+                signature = bytes.fromhex(signature_hex.strip())
+                print(signature)
+                # Decode the signature from DER format
+                r, s = decode_dss_signature(signature)
+                print(f"Decoded signature values: r={r}, s={s}")
+            except ValueError:
+                print(f"Formato de firma inválido: {signature_hex}")
+                exit(1)
+        else:
+            print("No se encontró la firma en los metadatos.")
             exit(1)
 
         # Verify the signature
