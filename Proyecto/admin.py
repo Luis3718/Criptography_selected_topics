@@ -19,6 +19,21 @@ def read_metadata(file_path):
         print(f"Error leyendo los metadatos: {e}")
         return None
 
+def obtener_archivo_original(file_path_signed):
+    """
+    Obtiene la ruta del archivo original correspondiente al archivo firmado.
+    Remueve el sufijo '_signed' del nombre del archivo.
+    """
+    # Remover '_signed' del nombre del archivo
+    if "_signed" in file_path_signed:
+        file_path_original = file_path_signed.replace("_signed", "")
+        if os.path.exists(file_path_original):
+            return file_path_original
+        else:
+            raise FileNotFoundError(f"El archivo original '{file_path_original}' no existe.")
+    else:
+        raise ValueError("El archivo firmado no tiene el sufijo '_signed'.")
+
 
 def calcular_hash(ruta_archivo):
     """Calculate the hash of a file."""
@@ -67,51 +82,59 @@ def verify_signature(file_path, public_key_pem, signature):
         return False
 
 if __name__ == "__main__":
-    # Request file name from the user
+    # Solicitar el archivo firmado
     file_to_check = input("Enter the name of the file to verify: ").strip()
 
-    # Define the path within the "Proyecto/reports" directory
-    project_reports_path = os.path.join(os.getcwd(), "reports", file_to_check)
-    
-    if not os.path.exists(project_reports_path):
-        print(f"File {file_to_check} does not exist in the 'Proyecto/reports' folder.")
+    # Ruta del archivo firmado
+    project_reports_path_signed = os.path.join(os.getcwd(), "reports", file_to_check)
+
+    if not os.path.exists(project_reports_path_signed):
+        print(f"File {file_to_check} does not exist in the 'reports' folder.")
         exit(1)
 
-    # Request employee ID
+    # Determinar la ruta del archivo original
+    try:
+        project_reports_path_original = obtener_archivo_original(project_reports_path_signed)
+        print(f"Archivo original encontrado: {project_reports_path_original}")
+    except (FileNotFoundError, ValueError) as e:
+        print(e)
+        exit(1)
+
+    # Solicitar el ID del empleado
     employee_id = input("Enter the employee ID: ").strip()
 
-    # Use the database session
+    # Obtener la clave pública del empleado
     with next(get_db()) as db:
-        # Retrieve the public key from the database
         public_key_pem = get_public_key_from_db(employee_id, db)
         if not public_key_pem:
             print("Public key retrieval failed.")
             exit(1)
 
-        # Read metadata from the PDF
-        metadata = read_metadata(project_reports_path)
-        if not metadata:
-            print("Failed to retrieve metadata from the PDF.")
-            exit(1)
+    # Leer los metadatos para extraer la firma
+    metadata = read_metadata(project_reports_path_signed)
+    if not metadata:
+        print("Failed to retrieve metadata from the signed PDF.")
+        exit(1)
 
-        # Use the correct key for the signature
-        signature_hex = metadata.get("/empleado")
-        if signature_hex:
-            try:
-                signature = bytes.fromhex(signature_hex.strip())
-                print(signature)
-                # Decode the signature from DER format
-                r, s = decode_dss_signature(signature)
-                print(f"Decoded signature values: r={r}, s={s}")
-            except ValueError:
-                print(f"Formato de firma inválido: {signature_hex}")
-                exit(1)
-        else:
-            print("No se encontró la firma en los metadatos.")
+    # Extraer la firma desde los metadatos
+    signature_hex = metadata.get("/empleado")
+    if signature_hex:
+        try:
+            signature = bytes.fromhex(signature_hex.strip())
+            print(f"Firma extraída: {signature.hex()}")
+        except ValueError:
+            print(f"Formato de firma inválido: {signature_hex}")
             exit(1)
+    else:
+        print("No se encontró la firma en los metadatos.")
+        exit(1)
 
-        # Verify the signature
-        if verify_signature(project_reports_path, public_key_pem, signature):
-            print("The file's signature is valid.")
-        else:
-            print("The file's signature is invalid.")
+    # Calcular el hash del archivo original
+    file_hash = calcular_hash(project_reports_path_original)
+    print(f"Hash calculado para verificación: {file_hash.hex()}")
+
+    # Verificar la firma
+    if verify_signature(project_reports_path_original, public_key_pem, signature):
+        print("The file's signature is valid.")
+    else:
+        print("The file's signature is invalid.")

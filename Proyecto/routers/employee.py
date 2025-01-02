@@ -157,9 +157,9 @@ def sign_report(
     # Guardar el reporte como PDF
     save_report_to_pdf(request.report_data, file_path)
 
-    # Calcular el hash del PDF
+    # Calcular el hash del PDF antes de agregar la firma
     hash_data = calcular_hash(file_path)
-    print(f"Hash calculado: {hash_data.hex()}")
+    print(f"Hash calculado (original): {hash_data.hex()}")
 
     # Firmar el hash usando la clave privada
     try:
@@ -168,11 +168,12 @@ def sign_report(
         raise HTTPException(status_code=500, detail=f"Error signing report: {str(e)}")
 
     print(f"Firma generada: {signature.hex()}")
+
     # Generar el nombre del archivo firmado
     signed_file_name = f"{base_file_name}_signed.pdf"
     signed_file_path = os.path.join(reports_folder, signed_file_name)
 
-    # Guardar la firma en el PDF
+    # Guardar la firma en los metadatos del PDF
     guardar_firma(file_path, signed_file_path, signature, "empleado")
 
     return {
@@ -180,6 +181,7 @@ def sign_report(
         "signed_report": signed_file_name,
         "signature": signature.hex(),
     }
+
 
 
 @router.get("/download_report_sign/{employee_id}")
