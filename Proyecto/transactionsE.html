@@ -6,10 +6,106 @@
     <title>Employee Sales</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
+    <style>
+        /* Incluir la fuente Lobster desde Google Fonts */
+        @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            padding: 20px;
+            background-color: #f4f4f9;
+            margin: 0;
+            overflow-x: hidden; /* Evita desbordamiento horizontal */
+        }
+
+        /* Barra superior */
+        body::before {
+            content: 'Small Cloth Shop'; /* Nombre de la página */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 60px; /* Altura de la barra superior */
+            background-color: #4682b4; /* Color azul más fuerte */
+            text-align: center;
+            line-height: 60px; /* Centrado vertical */
+            font-family: 'Lobster', sans-serif; /* Fuente llamativa */
+            font-size: 2.5em; /* Tamaño mayor para el nombre */
+            font-weight: bold;
+            color: #ffffff; /* Color de texto blanco */
+            z-index: 1;
+        }
+
+        /* Barra inferior */
+        body::after {
+            content: '© 2024 Small Cloth Shop. Todos los derechos reservados.';
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%; /* Barra inferior que cubre todo el ancho */
+            height: 30px; /* Altura pequeña */
+            background-color: #4682b4; /* Mismo color azul que la barra superior */
+            text-align: right;
+            line-height: 30px; /* Centrado vertical */
+            font-size: 0.8em;
+            color: #ffffff; /* Color de texto blanco */
+            padding-right: 20px; /* Espaciado para el texto */
+            z-index: 1;
+        }
+
+        .content {
+            margin-top: 80px; /* Para dejar espacio debajo de la barra superior */
+            padding: 20px;
+            background: #ffffff; /* Fondo blanco */
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            border: 1px solid #d1e7ff; /* Borde azul claro */
+            position: relative;
+            z-index: 2;
+            text-align: center; /* Alineación central del contenido */
+            max-width: 900px; /* Limita el ancho máximo */
+            margin-left: auto; /* Centra el contenido horizontalmente */
+            margin-right: auto; /* Centra el contenido horizontalmente */
+        }
+
+        h1 {
+            color: #3b82f6; /* Azul intermedio */
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            margin-top: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            overflow-x: auto;
+        }
+
+        th, td {
+            text-align: center;
+            padding: 10px;
+        }
+
+        th {
+            background-color: #4682b4;
+            color: white;
+        }
+
+        td {
+            background-color: #f9f9f9;
+        }
+
+        .table-bordered {
+            border: 1px solid #d1e7ff; /* Bordes suaves */
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center">My Sales</h1>
+    <div class="content">
+        <h1>My Sales</h1>
 
         <table class="table table-bordered mt-4">
             <thead class="table-dark">

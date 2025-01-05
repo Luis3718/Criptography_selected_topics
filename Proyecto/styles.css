@@ -1,27 +1,132 @@
+/* Incluir la fuente Lobster desde Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
+
 body {
-    font-family: Arial, sans-serif;
-    background-color: #f4f4f9;
+    font-family: 'Roboto', Arial, sans-serif;
+    background-color: #f0f8ff; /* Fondo azul claro */
     margin: 0;
     padding: 0;
+    color: #1a202c; /* Texto azul oscuro */
+    position: relative;
+    overflow-x: hidden; /* Evita desbordamiento horizontal */
 }
 
+/* Barra superior */
+body::before {
+    content: 'Small Cloth Shop'; /* Nombre de la página */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 60px; /* Altura de la barra superior */
+    background-color: #4682b4; /* Color azul más fuerte */
+    text-align: center;
+    line-height: 60px; /* Centrado vertical */
+    font-family: 'Lobster', sans-serif; /* Fuente llamativa */
+    font-size: 2.5em; /* Tamaño mayor para el nombre */
+    font-weight: bold;
+    color: #ffffff; /* Color de texto blanco */
+    z-index: 10; /* Barra superior encima del contenedor */
+}
+
+/* Barra inferior */
+body::after {
+    content: '© 2024 Small Cloth Shop. Todos los derechos reservados.';
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%; /* Barra inferior que cubre todo el ancho */
+    height: 30px; /* Altura pequeña */
+    background-color: #4682b4; /* Mismo color azul que la barra superior */
+    text-align: right;
+    line-height: 30px; /* Centrado vertical */
+    font-size: 0.8em;
+    color: #ffffff; /* Color de texto blanco */
+    padding-right: 20px; /* Espaciado para el texto */
+    z-index: 10; /* Barra inferior encima del contenedor */
+}
+
+/* Contenedor principal */
 .container {
-    max-width: 600px;
-    margin: 30px auto;
-    padding: 20px;
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    max-width: 750px; /* Ajuste del tamaño del contenedor */
+    margin: 150px auto; /* Espaciado desde las barras */
+    padding: 20px; /* Espaciado interno */
+    background: #ffffff; /* Fondo blanco */
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    border: 1px solid #d1e7ff; /* Borde azul claro */
+    position: relative; /* El contenedor ahora se mantiene en su flujo normal */
+    z-index: 1; /* El contenedor queda debajo de las barras */
+    text-align: center; /* Alineación central del contenido */
+    animation: fadeInUp 1s ease-in-out; /* Animación de entrada más rápida */
 }
 
+/* Animación de entrada para el contenedor */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(50px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Círculos decorativos en los bordes */
+.container::before,
+.container::after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    background-color: rgba(255, 255, 255, 0.1); /* Fondo transparente con opacidad */
+    border-radius: 50%;
+}
+
+.container::before {
+    top: -50px;
+    left: -50px;
+    width: 200px;
+    height: 200px;
+}
+
+.container::after {
+    bottom: -50px;
+    right: -50px;
+    width: 200px;
+    height: 200px;
+}
+
+/* Estilos para los campos de texto */
+input, textarea, button {
+    width: calc(100% - 20px); /* Hacer los campos un poco más pequeños que el contenedor */
+    margin-top: 10px;
+    padding: 12px;
+    border: 1px solid #93c5fd; /* Azul claro */
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    box-sizing: border-box; /* Para incluir el padding en el cálculo del ancho */
+}
+
+input:focus, textarea:focus {
+    outline: none;
+    border-color: #3b82f6; /* Azul intermedio */
+    box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
+}
+
+/* Estilos para los encabezados */
 h1 {
     text-align: center;
-    color: #333;
+    color: #1e40af; /* Azul oscuro elegante */
+    font-size: 2.5em;
+    margin-bottom: 20px;
 }
 
 h2 {
-    color: #555;
+    color: #3b82f6; /* Azul intermedio */
     margin-top: 30px;
+    font-size: 1.8em;
 }
 
 form {
@@ -30,27 +135,35 @@ form {
 
 label {
     display: block;
-    margin-top: 10px;
-    color: #333;
-}
-
-input, textarea, button {
-    width: 100%;
-    margin-top: 5px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-button {
     margin-top: 15px;
-    background-color: #007BFF;
+    font-weight: bold;
+    color: #1a202c;
+    font-size: 1em;
+}
+
+/* Estilos para el botón */
+button {
+    margin: 20px auto;
+    display: block;
+    width: 90%; /* Reducido un 10 % */
+    padding: 10px;
+    background-color: #2563eb; /* Azul vibrante */
     color: white;
     border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.9rem; /* Tamaño reducido */
     cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 button:hover {
-    background-color: #0056b3;
+    background-color: #1d4ed8; /* Azul más oscuro al pasar el mouse */
+    transform: scale(1.05);
+}
+
+button:active {
+    background-color: #1e40af; /* Azul intenso al hacer clic */
+    transform: scale(0.98);
 }
