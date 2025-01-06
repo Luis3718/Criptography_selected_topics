@@ -4,145 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Monthly Report</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="styles.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.4.0/axios.min.js"></script>
-    <style>
-        /* Incluir la fuente Lobster desde Google Fonts */
-        @import url('https://fonts.googleapis.com/css2?family=Lobster&display=swap');
-
-        body {
-            font-family: 'Roboto', Arial, sans-serif;
-            background-color: #f0f8ff; /* Fondo azul claro */
-            margin: 0;
-            padding: 0;
-            color: #1a202c; /* Texto azul oscuro */
-            position: relative;
-            overflow-x: hidden; /* Evita desbordamiento horizontal */
-        }
-
-        /* Barra superior */
-        body::before {
-            content: 'Small Cloth Shop'; /* Nombre de la página */
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 60px; /* Altura de la barra superior */
-            background-color: #4682b4; /* Color azul más fuerte */
-            text-align: center;
-            line-height: 60px; /* Centrado vertical */
-            font-family: 'Lobster', sans-serif; /* Fuente llamativa */
-            font-size: 2.5em; /* Tamaño mayor para el nombre */
-            font-weight: bold;
-            color: #ffffff; /* Color de texto blanco */
-            z-index: 1;
-        }
-
-        /* Barra inferior */
-        body::after {
-            content: '© 2024 Small Cloth Shop. Todos los derechos reservados.';
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%; /* Barra inferior que cubre todo el ancho */
-            height: 30px; /* Altura pequeña */
-            background-color: #4682b4; /* Mismo color azul que la barra superior */
-            text-align: right;
-            line-height: 30px; /* Centrado vertical */
-            font-size: 0.8em;
-            color: #ffffff; /* Color de texto blanco */
-            padding-right: 20px; /* Espaciado para el texto */
-            z-index: 1;
-        }
-
-        .main-content {
-            margin-top: 150px; /* Para dejar espacio debajo de la barra superior */
-            padding: 20px;
-            background: #ffffff; /* Fondo blanco */
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            border: 1px solid #d1e7ff; /* Borde azul claro */
-            position: relative;
-            z-index: 2;
-            text-align: center; /* Alineación central del contenido */
-            max-width: 800px; /* Limita el ancho máximo */
-            margin-left: auto; /* Centra el contenido horizontalmente */
-            margin-right: auto; /* Centra el contenido horizontalmente */
-        }
-
-        /* Estilos para los campos de texto */
-        input, textarea, button {
-            width: calc(100% - 20px); /* Hacer los campos un poco más pequeños que el contenedor */
-            margin-top: 10px;
-            padding: 12px;
-            border: 1px solid #93c5fd; /* Azul claro */
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-            box-sizing: border-box; /* Para incluir el padding en el cálculo del ancho */
-        }
-
-        input:focus, textarea:focus {
-            outline: none;
-            border-color: #3b82f6; /* Azul intermedio */
-            box-shadow: 0 0 5px rgba(59, 130, 246, 0.5);
-        }
-
-        h1 {
-            text-align: center;
-            color: #1e40af; /* Azul oscuro elegante */
-            font-size: 2.5em;
-            margin-bottom: 20px;
-        }
-
-        h2 {
-            color: #3b82f6; /* Azul intermedio */
-            margin-top: 30px;
-            font-size: 1.8em;
-        }
-
-        form {
-            margin-top: 15px;
-        }
-
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: bold;
-            color: #1a202c;
-            font-size: 1em;
-        }
-
-        button {
-            margin: 20px auto;
-            display: block;
-            width: 90%; /* Reducido un 10 % */
-            padding: 10px;
-            background-color: #2563eb; /* Azul vibrante */
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            text-transform: uppercase;
-            font-size: 0.9rem; /* Tamaño reducido */
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-        }
-
-        button:hover {
-            background-color: #1d4ed8; /* Azul más oscuro al pasar el mouse */
-            transform: scale(1.05);
-        }
-
-        button:active {
-            background-color: #1e40af; /* Azul intenso al hacer clic */
-            transform: scale(0.98);
-        }
-    </style>
 </head>
 <body>
-    <div class="main-content">
-        <h1>Generate Monthly Report</h1>
+    <div class="container mt-5">
+        <h1 class="text-center">Generate Monthly Report</h1>
 
         <form id="reportForm" class="mt-4">
             <div class="mb-3">
@@ -169,12 +36,18 @@
                     <!-- Rows will be dynamically inserted here -->
                 </tbody>
             </table>
+
+            <div class="mt-4">
+                <label for="privateKey" class="form-label">Upload Private Key:</label>
+                <input type="file" id="privateKey" class="form-control" accept=".pem">
+                <button id="signReport" class="btn btn-success mt-3">Sign Report</button>
+            </div>
         </div>
     </div>
 
     <script>
         document.getElementById('reportForm').addEventListener('submit', async function (event) {
-            event.preventDefault(); // Prevent form from refreshing the page
+            event.preventDefault();
 
             const token = localStorage.getItem('token');
             const month = document.getElementById('month').value;
@@ -193,7 +66,7 @@
 
                 const report = response.data;
                 const tableBody = document.getElementById('reportTableBody');
-                tableBody.innerHTML = ''; // Clear previous report rows
+                tableBody.innerHTML = '';
 
                 if (report.length === 0) {
                     alert('No transactions found for the selected month.');
@@ -219,6 +92,72 @@
                 alert('Failed to generate report. Please try again later.');
             }
         });
+
+        document.getElementById('signReport').addEventListener('click', async function () {
+        const fileInput = document.getElementById('privateKey');
+        if (!fileInput.files.length) {
+            alert('Please upload your private key file.');
+            return;
+        }
+
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('You need to log in first.');
+            return;
+        }
+
+        // Leer el archivo de clave privada
+        const reader = new FileReader();
+        reader.onload = async function (event) {
+            const privateKey = event.target.result; // Contenido del archivo PEM
+
+            try {
+                // Preparar los datos del reporte
+                const reportTableBody = document.getElementById('reportTableBody');
+                const rows = Array.from(reportTableBody.rows);
+                const reportData = rows.map(row => {
+                    const cells = row.cells;
+                    return {
+                        EmployeeName: cells[0].innerText,
+                        DateOfSale: cells[1].innerText,
+                        CustomerName: cells[2].innerText,
+                        CreditCardUsed: cells[3].innerText,
+                        TotalAmount: parseFloat(cells[4].innerText.replace('$', '')),
+                        ProductsSold: cells[5].innerText
+                    };
+                });
+
+                // Hacer la solicitud al backend
+                const response = await axios.post('http://localhost:8000/employee/sign_report', {
+                    report_data: reportData,
+                    private_key: privateKey
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json' // Asegurarse del encabezado correcto
+                    }
+                });
+
+                // Mostrar éxito y datos devueltos
+                alert('Report signed successfully.');
+                console.log('Signed Report:', response.data.signed_report);
+                console.log('Signature:', response.data.signature);
+
+                // Descarga del archivo firmado
+                const downloadLink = document.createElement('a');
+                downloadLink.href = `http://localhost:8000/static/${response.data.signed_report}`;
+                downloadLink.download = response.data.signed_report;
+                downloadLink.textContent = 'Download Signed Report';
+                document.body.appendChild(downloadLink);
+            } catch (error) {
+                console.error('Error signing the report:', error);
+                alert('Failed to sign the report.');
+            }
+        };
+
+        reader.readAsText(fileInput.files[0]);
+    });
+
     </script>
 </body>
 </html>
