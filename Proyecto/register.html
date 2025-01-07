@@ -21,8 +21,16 @@
                 <input type="text" id="customerPhoneNumber" name="PhoneNumber" required>
                 
                 <label for="customerCreditCardNumber">Tarjeta de Crédito:</label>
-                <input type="text" id="customerCreditCardNumber" name="CreditCardNumber" required>
-                
+                <input
+                    type="text"
+                    id="customerCreditCardNumber"
+                    name="CreditCardNumber"
+                    required
+                    maxlength="16"
+                    pattern="\d{16}"
+                    title="El número debe tener exactamente 16 dígitos."
+                >
+
                 <label for="customerUsername">Nombre de Usuario:</label>
                 <input type="text" id="customerUsername" name="Username" required>
                 
